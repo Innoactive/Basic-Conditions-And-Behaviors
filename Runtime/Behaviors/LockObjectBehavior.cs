@@ -6,7 +6,7 @@ using Innoactive.Creator.Core.Utils;
 namespace Innoactive.Creator.Core.Behaviors
 {
     /// <summary>
-    /// Behavior that locks the target SceneObject while active, and unlocks it again on deactivation (unless it was locked initially)
+    /// Behavior that locks the target SceneObject while active, and unlocks it again on deactivation (unless it was locked initially).
     /// </summary>
     [DataContract(IsReference = true)]
     public class LockObjectBehavior : Behavior<LockObjectBehavior.EntityData>
