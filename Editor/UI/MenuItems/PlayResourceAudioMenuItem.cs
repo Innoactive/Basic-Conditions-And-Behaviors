@@ -1,24 +1,15 @@
 ﻿using Innoactive.Creator.Core.Audio;
 using Innoactive.Creator.Core.Behaviors;
 using Innoactive.Creator.Core.Internationalization;
-using Innoactive.CreatorEditor.UI;
-using UnityEngine;
+using Innoactive.CreatorEditor.UI.StepInspector.Menu;
 
-namespace Innoactive.CreatorEditor.Core.UI.Behaviors
+namespace Innoactive.CreatorEditor.UI.Behaviors
 {
-    /// <summary>
-    /// Menu item which shows <see cref="PlayAudioBehavior"/> using a <see cref="ResourceAudio"/> in the step inspector.
-    /// </summary>
-    public class PlayResourceAudioMenuItem : StepInspectorMenu.Item<IBehavior>
+    /// <inheritdoc />
+    public class PlayResourceAudioMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override GUIContent DisplayedName
-        {
-            get
-            {
-                return new GUIContent("Audio/Play Audio File");
-            }
-        }
+        public override string DisplayedName { get; } = "Audio/Play Audio File";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()

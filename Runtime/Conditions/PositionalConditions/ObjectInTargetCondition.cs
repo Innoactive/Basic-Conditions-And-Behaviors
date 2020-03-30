@@ -1,24 +1,25 @@
 using System.Collections;
-using System.Runtime.Serialization;
 using UnityEngine;
 
 namespace Innoactive.Creator.Core.Conditions
 {
-    public interface IObjectInTargetData : IConditionData
+    /// <summary>
+    /// An active process for "object in target" conditions.
+    /// </summary>
+    public abstract class ObjectInTargetActiveProcess<TData> : Process<TData> where TData : class, IObjectInTargetData
     {
-        [DataMember]
-        float RequiredTimeInside { get; set; }
-    }
+        protected ObjectInTargetActiveProcess(TData data) : base(data)
+        {
+        }
 
-    public abstract class ObjectInTargetActiveProcess<TData> : IStageProcess<TData> where TData : IObjectInTargetData
-    {
         private bool isInside;
         private float timeStarted;
 
-        public void Start(TData data)
+        /// <inheritdoc />
+        public override void Start()
         {
-            data.IsCompleted = false;
-            isInside = IsInside(data);
+            Data.IsCompleted = false;
+            isInside = IsInside();
 
             if (isInside)
             {
@@ -26,13 +27,17 @@ namespace Innoactive.Creator.Core.Conditions
             }
         }
 
-        protected abstract bool IsInside(TData data);
+        /// <summary>
+        /// Returns true if the object is inside target.
+        /// </summary>
+        protected abstract bool IsInside();
 
-        public IEnumerator Update(TData data)
+        /// <inheritdoc />
+        public override IEnumerator Update()
         {
             while (true)
             {
-                if (isInside != IsInside(data))
+                if (isInside != IsInside())
                 {
                     isInside = !isInside;
 
@@ -42,9 +47,9 @@ namespace Innoactive.Creator.Core.Conditions
                     }
                 }
 
-                if (isInside && Time.time - timeStarted >= data.RequiredTimeInside)
+                if (isInside && Time.time - timeStarted >= Data.RequiredTimeInside)
                 {
-                    data.IsCompleted = true;
+                    Data.IsCompleted = true;
                     break;
                 }
 
@@ -52,11 +57,13 @@ namespace Innoactive.Creator.Core.Conditions
             }
         }
 
-        public void End(TData data)
+        /// <inheritdoc />
+        public override void End()
         {
         }
 
-        public void FastForward(TData data)
+        /// <inheritdoc />
+        public override void FastForward()
         {
         }
     }

@@ -14,9 +14,12 @@ namespace Innoactive.Creator.Core.Behaviors
     [DataContract(IsReference = true)]
     public class BehaviorSequence : Behavior<BehaviorSequence.EntityData>
     {
+        /// <summary>
+        /// Behavior sequence's data.
+        /// </summary>
         [DisplayName("Behavior Sequence")]
         [DataContract(IsReference = true)]
-        public class EntityData : EntityCollectionData<IBehavior>, IEntitySequenceData<IBehavior>, IBackgroundBehaviorData, IModeData
+        public class EntityData : EntityCollectionData<IBehavior>, IEntitySequenceDataWithMode<IBehavior>, IBackgroundBehaviorData
         {
             /// <summary>
             /// Are child behaviors activated only once or the collection is cycled.
@@ -33,40 +36,55 @@ namespace Innoactive.Creator.Core.Behaviors
             [Foldable, ListOf(typeof(FoldableAttribute), typeof(DeletableAttribute)), ExtendableList]
             public List<IBehavior> Behaviors { get; set; }
 
+            /// <inheritdoc />
             public override IEnumerable<IBehavior> GetChildren()
             {
                 return Behaviors.ToList();
             }
 
+            /// <inheritdoc />
             public IBehavior Current { get; set; }
 
+
+            /// <inheritdoc />
             public string Name { get; set; }
+
+            /// <inheritdoc />
             public IMode Mode { get; set; }
 
             /// <inheritdoc />
             public bool IsBlocking { get; set; }
         }
 
-        private class IteratingProcess : EntityIteratingProcess<EntityData, IBehavior>
+        private class IteratingProcess : EntityIteratingProcess<IBehavior>
         {
             private IEnumerator<IBehavior> enumerator;
 
-            public override void Start(EntityData data)
+
+            public IteratingProcess(IEntitySequenceDataWithMode<IBehavior> data) : base(data)
             {
-                base.Start(data);
-                enumerator = data.GetChildren().GetEnumerator();
             }
 
-            protected override bool ShouldActivateCurrent(EntityData data)
+            /// <inheritdoc />
+            public override void Start()
+            {
+                base.Start();
+                enumerator = Data.GetChildren().GetEnumerator();
+            }
+
+            /// <inheritdoc />
+            protected override bool ShouldActivateCurrent()
             {
                 return true;
             }
 
-            protected override bool ShouldDeactivateCurrent(EntityData data)
+            /// <inheritdoc />
+            protected override bool ShouldDeactivateCurrent()
             {
                 return true;
             }
 
+            /// <inheritdoc />
             protected override bool TryNext(out IBehavior entity)
             {
                 if (enumerator == null || (enumerator.MoveNext() == false))
@@ -82,18 +100,25 @@ namespace Innoactive.Creator.Core.Behaviors
             }
         }
 
-        private class ActiveProcess : IStageProcess<EntityData>
+        private class ActiveProcess : Process<EntityData>
         {
-            private readonly IStageProcess<EntityData> childProcess = new IteratingProcess();
+            private readonly IProcess childProcess;
 
-            public void Start(EntityData data)
+            public ActiveProcess(EntityData data) : base(data)
             {
-                childProcess.Start(data);
+                childProcess = new IteratingProcess(Data);
             }
 
-            public IEnumerator Update(EntityData data)
+            /// <inheritdoc />
+            public override void Start()
             {
-                if (data.PlaysOnRepeat == false)
+                childProcess.Start();
+            }
+
+            /// <inheritdoc />
+            public override IEnumerator Update()
+            {
+                if (Data.PlaysOnRepeat == false)
                 {
                     yield break;
                 }
@@ -102,29 +127,31 @@ namespace Innoactive.Creator.Core.Behaviors
 
                 while (endlessLoopCheck < 100000)
                 {
-                    IEnumerator update = childProcess.Update(data);
+                    IEnumerator update = childProcess.Update();
 
                     while (update.MoveNext())
                     {
                         yield return null;
                     }
 
-                    childProcess.End(data);
+                    childProcess.End();
 
-                    childProcess.Start(data);
+                    childProcess.Start();
 
                     endlessLoopCheck++;
                 }
             }
 
-            public void End(EntityData data)
+            /// <inheritdoc />
+            public override void End()
             {
             }
 
-            public void FastForward(EntityData data)
+            /// <inheritdoc />
+            public override void FastForward()
             {
-                childProcess.FastForward(data);
-                childProcess.End(data);
+                childProcess.FastForward();
+                childProcess.End();
             }
         }
 
@@ -134,13 +161,10 @@ namespace Innoactive.Creator.Core.Behaviors
 
         public BehaviorSequence(bool playsOnRepeat, IList<IBehavior> behaviors, string name = "Sequence")
         {
-            Data = new EntityData()
-            {
-                PlaysOnRepeat = playsOnRepeat,
-                Behaviors = new List<IBehavior>(behaviors),
-                Name = name,
-                IsBlocking = true
-            };
+            Data.PlaysOnRepeat = playsOnRepeat;
+            Data.Behaviors = new List<IBehavior>(behaviors);
+            Data.Name = name;
+            Data.IsBlocking = true;
         }
 
         public BehaviorSequence(bool playsOnRepeat, IList<IBehavior> behaviors, bool isBlocking, string name = "Sequence") : this(playsOnRepeat, behaviors, name)
@@ -148,24 +172,28 @@ namespace Innoactive.Creator.Core.Behaviors
             Data.IsBlocking = isBlocking;
         }
 
-        private readonly IProcess<EntityData> process = new Process<EntityData>(new IteratingProcess(), new ActiveProcess(), new StopEntityIteratingProcess<EntityData, IBehavior>());
-
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActivatingProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new IteratingProcess(Data);
         }
 
-        private readonly IConfigurator<EntityData> configurator = new BaseConfigurator<EntityData>().Add(new EntitySequenceConfigurator<EntityData, IBehavior>());
-
-        protected override IConfigurator<EntityData> Configurator
+        /// <inheritdoc />
+        public override IProcess GetActiveProcess()
         {
-            get
-            {
-                return configurator;
-            }
+            return new ActiveProcess(Data);
+        }
+
+        /// <inheritdoc />
+        public override IProcess GetDeactivatingProcess()
+        {
+            return new StopEntityIteratingProcess<IBehavior>(Data);
+        }
+
+        /// <inheritdoc />
+        protected override IConfigurator GetConfigurator()
+        {
+            return new SequenceConfigurator<IBehavior>(Data);
         }
     }
 }

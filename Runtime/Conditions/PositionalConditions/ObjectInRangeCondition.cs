@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
-using Innoactive.Creator.Core.Properties;
 using Innoactive.Creator.Core.Attributes;
 using Innoactive.Creator.Core.SceneObjects;
+using Innoactive.Creator.Core.Properties;
 using Innoactive.Creator.Core.Utils;
 
 namespace Innoactive.Creator.Core.Conditions
@@ -12,30 +12,46 @@ namespace Innoactive.Creator.Core.Conditions
     [DataContract(IsReference = true)]
     public class ObjectInRangeCondition : Condition<ObjectInRangeCondition.EntityData>
     {
+        /// <summary>
+        /// The data of "object in range" condition.
+        /// </summary>
         [DisplayName("Object Nearby")]
         public class EntityData : IObjectInTargetData
         {
+            /// <summary>
+            /// The object to measure distance from.
+            /// </summary>
             [DataMember]
             [DisplayName("First object")]
             public SceneObjectReference DistanceDetector { get; set; }
 
+            /// <summary>
+            /// The tracked object.
+            /// </summary>
             [DataMember]
             [DisplayName("Second object")]
             public SceneObjectReference Target { get; set; }
 
+            /// <summary>
+            /// The required distance between two objects to trigger the condition.
+            /// </summary>
             [DataMember]
             public float Range { get; set; }
 
+            /// <inheritdoc />
             [DataMember]
             [HideInTrainingInspector]
             public string Name { get; set; }
 
+            /// <inheritdoc />
             [DataMember]
             [DisplayName("Required seconds inside")]
             public float RequiredTimeInside { get; set; }
 
+            /// <inheritdoc />
             public bool IsCompleted { get; set; }
 
+            /// <inheritdoc />
             public Metadata Metadata { get; set; }
         }
 
@@ -50,52 +66,50 @@ namespace Innoactive.Creator.Core.Conditions
 
         public ObjectInRangeCondition(string target, string detector, float range, float requiredTimeInTarget = 0, string name = "Object Nearby")
         {
-            Data = new EntityData()
-            {
-                Target = new SceneObjectReference(target),
-                DistanceDetector = new SceneObjectReference(detector),
-                Range = range,
-                RequiredTimeInside = requiredTimeInTarget,
-                Name = name
-            };
+            Data.Target = new SceneObjectReference(target);
+            Data.DistanceDetector = new SceneObjectReference(detector);
+            Data.Range = range;
+            Data.RequiredTimeInside = requiredTimeInTarget;
+            Data.Name = name;
         }
 
         private class ActiveProcess : ObjectInTargetActiveProcess<EntityData>
         {
-            protected override bool IsInside(EntityData data)
+            public ActiveProcess(EntityData data) : base(data)
             {
-                return (data.Target.Value.GameObject.transform.position - data.DistanceDetector.Value.GameObject.transform.position).magnitude <= data.Range;
+            }
+
+            /// <inheritdoc />
+            protected override bool IsInside()
+            {
+                return (Data.Target.Value.GameObject.transform.position - Data.DistanceDetector.Value.GameObject.transform.position).magnitude <= Data.Range;
             }
         }
 
-        private class EntityAutocompleter : BaseAutocompleter<EntityData>
+        private class EntityAutocompleter : Autocompleter<EntityData>
         {
-            public override void Complete(EntityData data)
+            public EntityAutocompleter(EntityData data) : base(data)
             {
-                data.Target.Value.GameObject.transform.position = data.DistanceDetector.Value.GameObject.transform.position;
-                data.Target.Value.GameObject.transform.rotation = data.DistanceDetector.Value.GameObject.transform.rotation;
-                base.Complete(data);
+            }
+
+            /// <inheritdoc />
+            public override void Complete()
+            {
+                Data.Target.Value.GameObject.transform.position = Data.DistanceDetector.Value.GameObject.transform.position;
+                Data.Target.Value.GameObject.transform.rotation = Data.DistanceDetector.Value.GameObject.transform.rotation;
             }
         }
 
-        private readonly IProcess<EntityData> process = new ActiveOnlyProcess<EntityData>(new ActiveProcess());
-
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActiveProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new ActiveProcess(Data);
         }
 
-        private readonly IAutocompleter<EntityData> autocompleter = new EntityAutocompleter();
-
-        protected override IAutocompleter<EntityData> Autocompleter
+        /// <inheritdoc />
+        protected override IAutocompleter GetAutocompleter()
         {
-            get
-            {
-                return autocompleter;
-            }
+            return new EntityAutocompleter(Data);
         }
     }
 }

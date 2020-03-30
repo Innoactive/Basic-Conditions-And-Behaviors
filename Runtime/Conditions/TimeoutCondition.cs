@@ -4,38 +4,56 @@ using UnityEngine;
 
 namespace Innoactive.Creator.Core.Conditions
 {
+    /// <summary>
+    /// A condition that completes when a certain amount of time has passed.
+    /// </summary>
     [DataContract(IsReference = true)]
     public class TimeoutCondition : Condition<TimeoutCondition.EntityData>
     {
+        /// <summary>
+        /// The data for timeout condition.
+        /// </summary>
         [DisplayName("Timeout")]
         public class EntityData : IConditionData
         {
+            /// <summary>
+            /// The delay before the condition completes.
+            /// </summary>
             [DataMember]
             [DisplayName("Wait for seconds")]
             public float Timeout { get; set; }
 
+            /// <inheritdoc />
             public bool IsCompleted { get; set; }
 
+            /// <inheritdoc />
             [DataMember]
             [HideInTrainingInspector]
             public string Name { get; set; }
 
+            /// <inheritdoc />
             public Metadata Metadata { get; set; }
         }
 
-        private class ActiveProcess : BaseStageProcessOverCompletable<EntityData>
+        private class ActiveProcess : BaseActiveProcessOverCompletable<EntityData>
         {
-            private float timeStarted;
-
-            protected override bool CheckIfCompleted(EntityData data)
+            public ActiveProcess(EntityData data) : base(data)
             {
-                return Time.time - timeStarted >= data.Timeout;
             }
 
-            public override void Start(EntityData data)
+            private float timeStarted;
+
+            /// <inheritdoc />
+            protected override bool CheckIfCompleted()
+            {
+                return Time.time - timeStarted >= Data.Timeout;
+            }
+
+            /// <inheritdoc />
+            public override void Start()
             {
                 timeStarted = Time.time;
-                base.Start(data);
+                base.Start();
             }
         }
 
@@ -45,29 +63,14 @@ namespace Innoactive.Creator.Core.Conditions
 
         public TimeoutCondition(float timeout, string name = "Timeout")
         {
-            Data = new EntityData()
-            {
-                Timeout = timeout,
-                Name = name
-            };
+            Data.Timeout = timeout;
+            Data.Name = name;
         }
 
-        private readonly IProcess<EntityData> process = new ActiveOnlyProcess<EntityData>(new ActiveProcess());
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActiveProcess()
         {
-            get
-            {
-                return process;
-            }
-        }
-
-        private readonly IAutocompleter<EntityData> autocompleter = new BaseAutocompleter<EntityData>();
-        protected override IAutocompleter<EntityData> Autocompleter
-        {
-            get
-            {
-                return autocompleter;
-            }
+            return new ActiveProcess(Data);
         }
     }
 }

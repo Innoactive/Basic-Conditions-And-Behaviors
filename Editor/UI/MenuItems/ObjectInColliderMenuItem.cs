@@ -1,22 +1,13 @@
 ﻿using Innoactive.Creator.Core.Conditions;
-using Innoactive.CreatorEditor.UI;
-using UnityEngine;
+using Innoactive.CreatorEditor.UI.StepInspector.Menu;
 
-namespace Innoactive.CreatorEditor.Core.UI.Conditions
+namespace Innoactive.CreatorEditor.UI.Conditions
 {
-    /// <summary>
-    /// Menu item which shows <see cref="ObjectInColliderCondition"/> in the step inspector.
-    /// </summary>
-    public class ObjectInColliderMenuItem : StepInspectorMenu.Item<ICondition>
+    /// <inheritdoc />
+    public class ObjectInColliderMenuItem : MenuItem<ICondition>
     {
         /// <inheritdoc />
-        public override GUIContent DisplayedName
-        {
-            get
-            {
-                return new GUIContent("Move Object into Collider");
-            }
-        }
+        public override string DisplayedName { get; } = "Move Object into Collider";
 
         /// <inheritdoc />
         public override ICondition GetNewItem()

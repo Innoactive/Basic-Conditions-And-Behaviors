@@ -1,19 +1,13 @@
 ﻿using Innoactive.Creator.Core.Conditions;
-using Innoactive.CreatorEditor.UI;
-using UnityEngine;
+using Innoactive.CreatorEditor.UI.StepInspector.Menu;
 
-namespace Innoactive.CreatorEditor.Core.UI.Conditions
+namespace Innoactive.CreatorEditor.UI.Conditions
 {
-    /// <summary>
-    /// Menu item which shows <see cref="TimeoutCondition"/> in the step inspector.
-    /// </summary>
-    public class TimeoutMenuItem : StepInspectorMenu.Item<ICondition>
+    /// <inheritdoc />
+    public class TimeoutMenuItem : MenuItem<ICondition>
     {
         /// <inheritdoc />
-        public override GUIContent DisplayedName
-        {
-            get { return new GUIContent("Timeout"); }
-        }
+        public override string DisplayedName { get; } = "Timeout";
 
         /// <inheritdoc />
         public override ICondition GetNewItem()

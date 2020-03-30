@@ -15,6 +15,9 @@ namespace Innoactive.Creator.Core.Behaviors
     [DataContract(IsReference = true)]
     public class MoveObjectBehavior : Behavior<MoveObjectBehavior.EntityData>
     {
+        /// <summary>
+        /// The "move object" behavior's data.
+        /// </summary>
         [DisplayName("Move Object")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
@@ -40,37 +43,47 @@ namespace Innoactive.Creator.Core.Behaviors
             [DisplayName("Duration in seconds")]
             public float Duration { get; set; }
 
+            /// <inheritdoc />
             public Metadata Metadata { get; set; }
+
+            /// <inheritdoc />
             public string Name { get; set; }
         }
 
-        private class ActivatingProcess : IStageProcess<EntityData>
+        private class ActivatingProcess : Process<EntityData>
         {
             private float startingTime;
-            public void Start(EntityData data)
+
+            public ActivatingProcess(EntityData data) : base(data)
+            {
+            }
+
+            /// <inheritdoc />
+            public override void Start()
             {
                 startingTime = Time.time;
             }
 
-            public IEnumerator Update(EntityData data)
+            /// <inheritdoc />
+            public override IEnumerator Update()
             {
-                Transform movingTransform = data.Target.Value.GameObject.transform;
-                Transform targetPositionTransform = data.PositionProvider.Value.GameObject.transform;
+                Transform movingTransform = Data.Target.Value.GameObject.transform;
+                Transform targetPositionTransform = Data.PositionProvider.Value.GameObject.transform;
 
                 Vector3 initialPosition = movingTransform.position;
                 Quaternion initialRotation = movingTransform.rotation;
 
-                while (Time.time - startingTime < data.Duration)
+                while (Time.time - startingTime < Data.Duration)
                 {
                     if (movingTransform == null || movingTransform.Equals(null) || targetPositionTransform == null || targetPositionTransform.Equals(null))
                     {
                         string warningFormat = "The training scene object's game object is null, transition movement is not completed, behavior activation is forcefully finished.";
                         warningFormat += "Target object unique name: {0}, Position provider's unique name: {1}";
-                        Debug.LogWarningFormat(warningFormat, data.Target.UniqueName, data.PositionProvider.UniqueName);
+                        Debug.LogWarningFormat(warningFormat, Data.Target.UniqueName, Data.PositionProvider.UniqueName);
                         yield break;
                     }
 
-                    float progress = (Time.time - startingTime) / data.Duration;
+                    float progress = (Time.time - startingTime) / Data.Duration;
 
                     movingTransform.position = Vector3.Lerp(initialPosition, targetPositionTransform.position, progress);
                     movingTransform.rotation = Quaternion.Slerp(initialRotation, targetPositionTransform.rotation, progress);
@@ -79,16 +92,17 @@ namespace Innoactive.Creator.Core.Behaviors
                 }
             }
 
-            public void End(EntityData data)
+            /// <inheritdoc />
+            public override void End()
             {
-                Transform movingTransform = data.Target.Value.GameObject.transform;
-                Transform targetPositionTransform = data.PositionProvider.Value.GameObject.transform;
+                Transform movingTransform = Data.Target.Value.GameObject.transform;
+                Transform targetPositionTransform = Data.PositionProvider.Value.GameObject.transform;
 
                 movingTransform.position = targetPositionTransform.position;
                 movingTransform.rotation = targetPositionTransform.rotation;
             }
 
-            public void FastForward(EntityData data)
+            public override void FastForward()
             {
             }
         }
@@ -103,23 +117,16 @@ namespace Innoactive.Creator.Core.Behaviors
 
         public MoveObjectBehavior(string targetName, string positionProviderName, float duration, string name = "Move Object")
         {
-            Data = new EntityData()
-            {
-                Target = new SceneObjectReference(targetName),
-                PositionProvider = new SceneObjectReference(positionProviderName),
-                Duration = duration,
-                Name = name
-            };
+            Data.Target = new SceneObjectReference(targetName);
+            Data.PositionProvider = new SceneObjectReference(positionProviderName);
+            Data.Duration = duration;
+            Data.Name = name;
         }
 
-        private readonly IProcess<EntityData> process = new Process<EntityData>(new ActivatingProcess(), new EmptyStageProcess<EntityData>(), new EmptyStageProcess<EntityData>());
-
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActivatingProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new ActivatingProcess(Data);
         }
     }
 }

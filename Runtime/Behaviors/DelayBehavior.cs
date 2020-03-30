@@ -11,6 +11,9 @@ namespace Innoactive.Creator.Core.Behaviors
     [DataContract(IsReference = true)]
     public class DelayBehavior : Behavior<DelayBehavior.EntityData>
     {
+        /// <summary>
+        /// The data class for a delay behavior.
+        /// </summary>
         [DisplayName("Delay")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
@@ -36,46 +39,47 @@ namespace Innoactive.Creator.Core.Behaviors
                 delayTime = 0f;
             }
 
-            Data = new EntityData
-            {
-                DelayTime = delayTime,
-                Name = name,
-            };
+            Data.DelayTime = delayTime;
+            Data.Name = name;
         }
 
-        private class ActivatingProcess : IStageProcess<EntityData>
+        private class ActivatingProcess : Process<EntityData>
         {
-            public void Start(EntityData data)
+            public ActivatingProcess(EntityData data) : base(data)
             {
             }
 
-            public IEnumerator Update(EntityData data)
+            /// <inheritdoc />
+            public override void Start()
+            {
+            }
+
+            /// <inheritdoc />
+            public override IEnumerator Update()
             {
                 float timeStarted = Time.time;
 
-                while (Time.time - timeStarted < data.DelayTime)
+                while (Time.time - timeStarted < Data.DelayTime)
                 {
                     yield return null;
                 }
             }
 
-            public void End(EntityData data)
+            /// <inheritdoc />
+            public override void End()
             {
             }
 
-            public void FastForward(EntityData data)
+            /// <inheritdoc />
+            public override void FastForward()
             {
             }
         }
 
-        private readonly IProcess<EntityData> process = new Process<EntityData>(new ActivatingProcess(), new EmptyStageProcess<EntityData>(), new EmptyStageProcess<EntityData>());
-
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActivatingProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new ActivatingProcess(Data);
         }
     }
 }

@@ -1,78 +1,111 @@
-﻿﻿using System.Runtime.Serialization;
- using Innoactive.Creator.Core.Attributes;
- using Innoactive.Creator.Core.SceneObjects;
- using Innoactive.Creator.Core.Utils;
+﻿using System.Runtime.Serialization;
+using Innoactive.Creator.Core.Attributes;
+using Innoactive.Creator.Core.SceneObjects;
+using Innoactive.Creator.Core.Utils;
 
- namespace Innoactive.Creator.Core.Behaviors
+namespace Innoactive.Creator.Core.Behaviors
 {
     /// <summary>
-    /// Behavior that locks the target <see cref="ISceneObject"/> while active, and unlocks it again on deactivation (unless it was locked initially).
+    /// Behavior that locks the target SceneObject while active, and unlocks it again on deactivation (unless it was locked initially)
     /// </summary>
     [DataContract(IsReference = true)]
     public class LockObjectBehavior : Behavior<LockObjectBehavior.EntityData>
     {
+        /// <summary>
+        /// "Lock object" behavior's data.
+        /// </summary>
         [DisplayName("Lock Object")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
+            /// <summary>
+            /// The object to lock.
+            /// </summary>
             [DataMember]
             [DisplayName("Object to lock")]
             public SceneObjectReference Target { get; set; }
 
+            /// <summary>
+            /// If set to true, the behavior will unlock the <see cref="Target"/> at the end of the step.
+            /// </summary>
             [DataMember]
             [DisplayName("Lock only during this step")]
             public bool IsOnlyLockedInStep { get; set; }
 
+            /// <summary>
+            /// A field to record if the object was locked at the beginning of the step.
+            /// </summary>
             public bool WasLockedOnActivate { get; set; }
 
+            ///<inheritdoc />
             public Metadata Metadata { get; set; }
+
+            ///<inheritdoc />
             public string Name { get; set; }
         }
 
-        private class ActivatingProcess : InstantStageProcess<EntityData>
+        private class ActivatingProcess : InstantProcess<EntityData>
         {
-            public override void Start(EntityData data)
+            public ActivatingProcess(EntityData data) : base(data)
             {
-                data.WasLockedOnActivate = data.Target.Value.IsLocked;
-                if (data.WasLockedOnActivate == false)
+            }
+
+            ///<inheritdoc />
+            public override void Start()
+            {
+                Data.WasLockedOnActivate = Data.Target.Value.IsLocked;
+                if (Data.WasLockedOnActivate == false)
                 {
-                    data.Target.Value.SetLocked(true);
+                    Data.Target.Value.SetLocked(true);
                 }
             }
         }
 
-        private class DeactivatingProcess : InstantStageProcess<EntityData>
+        private class DeactivatingProcess : InstantProcess<EntityData>
         {
-            public override void Start(EntityData data)
+            public DeactivatingProcess(EntityData data) : base(data)
             {
-                if (data.WasLockedOnActivate == false && data.IsOnlyLockedInStep)
+            }
+
+            ///<inheritdoc />
+            public override void Start()
+            {
+                if (Data.WasLockedOnActivate == false && Data.IsOnlyLockedInStep)
                 {
-                    data.Target.Value.SetLocked(false);
+                    Data.Target.Value.SetLocked(false);
                 }
             }
         }
 
-        public LockObjectBehavior() : this("") { }
+        public LockObjectBehavior() : this("")
+        {
+        }
 
-        public LockObjectBehavior(ISceneObject target) : this(TrainingReferenceUtils.GetNameFrom(target)) { }
+        public LockObjectBehavior(ISceneObject target) : this(TrainingReferenceUtils.GetNameFrom(target))
+        {
+        }
 
-        public LockObjectBehavior(ISceneObject target, bool isOnlyLockedInStep) : this(TrainingReferenceUtils.GetNameFrom(target), isOnlyLockedInStep: isOnlyLockedInStep) { }
+        public LockObjectBehavior(ISceneObject target, bool isOnlyLockedInStep) : this(TrainingReferenceUtils.GetNameFrom(target), isOnlyLockedInStep: isOnlyLockedInStep)
+        {
+        }
 
         public LockObjectBehavior(string targetName, string name = "Lock Object", bool isOnlyLockedInStep = true)
         {
-            Data = new EntityData();
             Data.Target = new SceneObjectReference(targetName);
             Data.Name = name;
             Data.IsOnlyLockedInStep = isOnlyLockedInStep;
         }
 
-        private readonly IProcess<EntityData> process = new Process<EntityData>(new ActivatingProcess(), new EmptyStageProcess<EntityData>(), new DeactivatingProcess());
-        protected override IProcess<EntityData> Process
+        ///<inheritdoc />
+        public override IProcess GetActivatingProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new ActivatingProcess(Data);
+        }
+
+        ///<inheritdoc />
+        public override IProcess GetDeactivatingProcess()
+        {
+            return new DeactivatingProcess(Data);
         }
     }
 }

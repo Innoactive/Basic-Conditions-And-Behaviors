@@ -1,19 +1,13 @@
 ﻿using Innoactive.Creator.Core.Behaviors;
-using Innoactive.CreatorEditor.UI;
-using UnityEngine;
+using Innoactive.CreatorEditor.UI.StepInspector.Menu;
 
-namespace Innoactive.CreatorEditor.Core.UI.Behaviors
+namespace Innoactive.CreatorEditor.UI.Behaviors
 {
-    /// <summary>
-    /// Menu item which shows <see cref="HighlightObjectBehavior"/> in the step inspector.
-    /// </summary>
-    public class HighlightObjectMenuItem : StepInspectorMenu.Item<IBehavior>
+    /// <inheritdoc />
+    public class HighlightObjectMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override GUIContent DisplayedName
-        {
-            get { return new GUIContent("Highlight Object"); }
-        }
+        public override string DisplayedName { get; } = "Highlight Object";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()

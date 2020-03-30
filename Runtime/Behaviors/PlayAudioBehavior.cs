@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Runtime.Serialization;
-using Innoactive.Creator.Core.Audio;
 using Innoactive.Creator.Core.Attributes;
+using Innoactive.Creator.Core.Audio;
 using Innoactive.Creator.Core.Configuration;
 using Innoactive.Creator.Core.Configuration.Modes;
 
 namespace Innoactive.Creator.Core.Behaviors
 {
     /// <summary>
-    /// Behavior which plays an audio file.
+    /// A behavior that plays audio.
     /// </summary>
     [DataContract(IsReference = true)]
     public class PlayAudioBehavior : Behavior<PlayAudioBehavior.EntityData>, IOptional
     {
+        /// <summary>
+        /// The "play audio" behavior's data.
+        /// </summary>
         [DataContract(IsReference = true)]
         public class EntityData : IBackgroundBehaviorData
         {
@@ -30,37 +33,44 @@ namespace Innoactive.Creator.Core.Behaviors
             [DisplayName("Execution stages")]
             public BehaviorExecutionStages ExecutionStages { get; set; }
 
+            /// <summary>
+            /// The Unity's audio source to play the sound. If not set, it will use <seealso cref="RuntimeConfigurator.Configuration.InstructionPlayer"/>.
+            /// </summary>
             public AudioSource AudioPlayer { get; set; }
 
+            /// <inheritdoc />
             public Metadata Metadata { get; set; }
+
+            /// <inheritdoc />
             public string Name { get; set; }
 
             /// <inheritdoc />
             public bool IsBlocking { get; set; }
         }
 
-        private class PlayAudioProcess : IStageProcess<EntityData>
+        private class PlayAudioProcess : Process<EntityData>
         {
             private readonly BehaviorExecutionStages executionStages;
 
-            public PlayAudioProcess(BehaviorExecutionStages executionStages)
+            public PlayAudioProcess(BehaviorExecutionStages executionStages, EntityData data) : base(data)
             {
                 this.executionStages = executionStages;
             }
 
-            public void Start(EntityData data)
+            /// <inheritdoc />
+            public override void Start()
             {
-                if (data.AudioPlayer == null)
+                if (Data.AudioPlayer == null)
                 {
-                    data.AudioPlayer = RuntimeConfigurator.Configuration.InstructionPlayer;
+                    Data.AudioPlayer = RuntimeConfigurator.Configuration.InstructionPlayer;
                 }
 
-                if ((data.ExecutionStages & executionStages) > 0)
+                if ((Data.ExecutionStages & executionStages) > 0)
                 {
-                    if (data.AudioData.HasAudioClip)
+                    if (Data.AudioData.HasAudioClip)
                     {
-                        data.AudioPlayer.clip = data.AudioData.AudioClip;
-                        data.AudioPlayer.Play();
+                        Data.AudioPlayer.clip = Data.AudioData.AudioClip;
+                        Data.AudioPlayer.Play();
                     }
                     else
                     {
@@ -69,27 +79,30 @@ namespace Innoactive.Creator.Core.Behaviors
                 }
             }
 
-            public IEnumerator Update(EntityData data)
+            /// <inheritdoc />
+            public override IEnumerator Update()
             {
-                while ((data.ExecutionStages & executionStages) > 0 && data.AudioPlayer.isPlaying)
+                while ((Data.ExecutionStages & executionStages) > 0 && Data.AudioPlayer.isPlaying)
                 {
                     yield return null;
                 }
             }
 
-            public void End(EntityData data)
+            /// <inheritdoc />
+            public override void End()
             {
-                if ((data.ExecutionStages & executionStages) > 0)
+                if ((Data.ExecutionStages & executionStages) > 0)
                 {
-                    data.AudioPlayer.clip = null;
+                    Data.AudioPlayer.clip = null;
                 }
             }
 
-            public void FastForward(EntityData data)
+            /// <inheritdoc />
+            public override void FastForward()
             {
-                if ((data.ExecutionStages & executionStages) > 0 && data.AudioPlayer.isPlaying)
+                if ((Data.ExecutionStages & executionStages) > 0 && Data.AudioPlayer.isPlaying)
                 {
-                    data.AudioPlayer.Stop();
+                    Data.AudioPlayer.Stop();
                 }
             }
         }
@@ -100,14 +113,11 @@ namespace Innoactive.Creator.Core.Behaviors
 
         public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, AudioSource audioPlayer = null, string name = "Play Audio")
         {
-            Data = new EntityData
-            {
-                AudioData = audioData,
-                ExecutionStages = executionStages,
-                AudioPlayer = audioPlayer,
-                Name = name,
-                IsBlocking = true
-            };
+            Data.AudioData = audioData;
+            Data.ExecutionStages = executionStages;
+            Data.AudioPlayer = audioPlayer;
+            Data.Name = name;
+            Data.IsBlocking = true;
         }
 
         public PlayAudioBehavior(IAudioData audioData, BehaviorExecutionStages executionStages, bool isBlocking, AudioSource audioPlayer = null, string name = "Play Audio") : this(audioData, executionStages, audioPlayer, name)
@@ -115,14 +125,16 @@ namespace Innoactive.Creator.Core.Behaviors
             Data.IsBlocking = isBlocking;
         }
 
-        private readonly IProcess<EntityData> process = new Process<EntityData>(new PlayAudioProcess(BehaviorExecutionStages.Activation), new EmptyStageProcess<EntityData>(), new PlayAudioProcess(BehaviorExecutionStages.Deactivation));
-
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActivatingProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new PlayAudioProcess(BehaviorExecutionStages.Activation, Data);
+        }
+
+        /// <inheritdoc />
+        public override IProcess GetDeactivatingProcess()
+        {
+            return new PlayAudioProcess(BehaviorExecutionStages.Deactivation, Data);
         }
     }
 }

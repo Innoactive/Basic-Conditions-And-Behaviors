@@ -1,9 +1,9 @@
 ﻿using System.Runtime.Serialization;
-using Innoactive.Creator.Core.Properties;
 using Innoactive.Creator.Core.Attributes;
 using Innoactive.Creator.Core.Configuration;
 using Innoactive.Creator.Core.Configuration.Modes;
 using Innoactive.Creator.Core.SceneObjects;
+using Innoactive.Creator.Core.Properties;
 using Innoactive.Creator.Core.Utils;
 using UnityEngine;
 
@@ -15,6 +15,9 @@ namespace Innoactive.Creator.Core.Behaviors
     [DataContract(IsReference = true)]
     public class HighlightObjectBehavior : Behavior<HighlightObjectBehavior.EntityData>
     {
+        /// <summary>
+        /// "Highlight object" behavior's data.
+        /// </summary>
         [DisplayName("Highlight Object")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
@@ -32,15 +35,9 @@ namespace Innoactive.Creator.Core.Behaviors
             [DisplayName("Highlight color")]
             public Color HighlightColor
             {
-                get
-                {
-                    return CustomHighlightColor.Value;
-                }
+                get { return CustomHighlightColor.Value; }
 
-                set
-                {
-                    CustomHighlightColor = new ModeParameter<Color>("HighlightColor", value);
-                }
+                set { CustomHighlightColor = new ModeParameter<Color>("HighlightColor", value); }
             }
 
             /// <summary>
@@ -50,45 +47,49 @@ namespace Innoactive.Creator.Core.Behaviors
             [DisplayName("Object to highlight")]
             public ScenePropertyReference<IHighlightProperty> ObjectToHighlight { get; set; }
 
-            /// <summary>
-            /// Metadata used for undo and redo feature.
-            /// </summary>
+            /// <inheritdoc />
             public Metadata Metadata { get; set; }
 
             /// <inheritdoc />
             public string Name { get; set; }
         }
 
-        private class ActivatingProcess : InstantStageProcess<EntityData>
+        private class ActivatingProcess : InstantProcess<EntityData>
         {
-            /// <inheritdoc />
-            public override void Start(EntityData data)
+            public ActivatingProcess(EntityData data) : base(data)
             {
-                if (data.ObjectToHighlight.Value != null)
-                {
-                    data.ObjectToHighlight.Value.Highlight(data.HighlightColor);
-                }
+            }
+
+            /// <inheritdoc />
+            public override void Start()
+            {
+                Data.ObjectToHighlight.Value?.Highlight(Data.HighlightColor);
             }
         }
 
-        private class DeactivatingProcess : InstantStageProcess<EntityData>
+        private class DeactivatingProcess : InstantProcess<EntityData>
         {
-            /// <inheritdoc />
-            public override void Start(EntityData data)
+            public DeactivatingProcess(EntityData data) : base(data)
             {
-                if (data.ObjectToHighlight.Value != null)
-                {
-                    data.ObjectToHighlight.Value.Unhighlight();
-                }
+            }
+
+            /// <inheritdoc />
+            public override void Start()
+            {
+                Data.ObjectToHighlight.Value?.Unhighlight();
             }
         }
 
-        private class EntityConfigurator : IConfigurator<EntityData>
+        private class EntityConfigurator : Configurator<EntityData>
         {
             /// <inheritdoc />
-            public void Configure(EntityData data, IMode mode, Stage stage)
+            public override void Configure(IMode mode, Stage stage)
             {
-                data.CustomHighlightColor.Configure(mode);
+                Data.CustomHighlightColor.Configure(mode);
+            }
+
+            public EntityConfigurator(EntityData data) : base(data)
+            {
             }
         }
 
@@ -98,12 +99,9 @@ namespace Innoactive.Creator.Core.Behaviors
 
         public HighlightObjectBehavior(string sceneObjectName, Color highlightColor, string name = "Highlight Object")
         {
-            Data = new EntityData()
-            {
-                ObjectToHighlight = new ScenePropertyReference<IHighlightProperty>(sceneObjectName),
-                HighlightColor = highlightColor,
-                Name = name
-            };
+            Data.ObjectToHighlight = new ScenePropertyReference<IHighlightProperty>(sceneObjectName);
+            Data.HighlightColor = highlightColor;
+            Data.Name = name;
         }
 
         public HighlightObjectBehavior(IHighlightProperty target) : this(target, Color.magenta)
@@ -114,26 +112,22 @@ namespace Innoactive.Creator.Core.Behaviors
         {
         }
 
-        private readonly IProcess<EntityData> process = new Process<EntityData>(new ActivatingProcess(), new EmptyStageProcess<EntityData>(), new DeactivatingProcess());
-
         /// <inheritdoc />
-        protected override IProcess<EntityData> Process
+        public override IProcess GetActivatingProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new ActivatingProcess(Data);
         }
 
-        private readonly IConfigurator<EntityData> configurator = new BaseConfigurator<EntityData>().Add(new EntityConfigurator());
+        /// <inheritdoc />
+        public override IProcess GetDeactivatingProcess()
+        {
+            return new DeactivatingProcess(Data);
+        }
 
         /// <inheritdoc />
-        protected override IConfigurator<EntityData> Configurator
+        protected override IConfigurator GetConfigurator()
         {
-            get
-            {
-                return configurator;
-            }
+            return new EntityConfigurator(Data);
         }
     }
 }

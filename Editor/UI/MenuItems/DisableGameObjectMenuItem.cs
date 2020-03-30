@@ -1,23 +1,14 @@
 ﻿using Innoactive.Creator.Core.Behaviors;
-using Innoactive.CreatorEditor.UI;
-using UnityEngine;
+using Innoactive.CreatorEditor.UI.StepInspector.Menu;
 
-namespace Innoactive.CreatorEditor.Core.UI.Behaviors
+namespace Innoactive.CreatorEditor.UI.Behaviors
 {
-    /// <summary>
-    /// Menu item which shows <see cref="DisableGameObjectBehavior"/> in the step inspector.
-    /// </summary>
-    public class DisableGameObjectMenuItem : StepInspectorMenu.Item<IBehavior>
+    /// <inheritdoc />
+    public class DisableGameObjectMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override GUIContent DisplayedName
-        {
-            get
-            {
-                return new GUIContent("Disable Object");
-            }
-        }
-        
+        public override string DisplayedName { get; } = "Disable Object";
+
         /// <inheritdoc />
         public override IBehavior GetNewItem()
         {

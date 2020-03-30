@@ -6,28 +6,42 @@ using Innoactive.Creator.Core.Utils;
 namespace Innoactive.Creator.Core.Behaviors
 {
     /// <summary>
-    /// Enables the gameObject of target <see cref="ISceneObject"/>.
+    /// Enables gameObject of target ISceneObject.
     /// </summary>
     [DataContract(IsReference = true)]
     public class EnableGameObjectBehavior : Behavior<EnableGameObjectBehavior.EntityData>
     {
+        /// <summary>
+        /// "Enable game object" behavior's data.
+        /// </summary>
         [DisplayName("Enable Object")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
+            /// <summary>
+            /// The object to enable.
+            /// </summary>
             [DataMember]
             [DisplayName("Object to enable")]
             public SceneObjectReference Target { get; set; }
 
+            /// <inheritdoc />
             public Metadata Metadata { get; set; }
+
+            /// <inheritdoc />
             public string Name { get; set; }
         }
 
-        private class ActivatingProcess : InstantStageProcess<EntityData>
+        private class ActivatingProcess : InstantProcess<EntityData>
         {
-            public override void Start(EntityData data)
+            public ActivatingProcess(EntityData data) : base(data)
             {
-                data.Target.Value.GameObject.SetActive(true);
+            }
+
+            /// <inheritdoc />
+            public override void Start()
+            {
+                Data.Target.Value.GameObject.SetActive(true);
             }
         }
 
@@ -43,19 +57,14 @@ namespace Innoactive.Creator.Core.Behaviors
         /// <param name="targetObject">Name of the object to enable.</param>
         public EnableGameObjectBehavior(string targetObject, string name = "Enable Object")
         {
-            Data = new EntityData();
             Data.Target = new SceneObjectReference(targetObject);
             Data.Name = name;
         }
 
-        private readonly IProcess<EntityData> process = new Process<EntityData>(new ActivatingProcess(), new EmptyStageProcess<EntityData>(), new EmptyStageProcess<EntityData>());
-
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActivatingProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new ActivatingProcess(Data);
         }
     }
 }

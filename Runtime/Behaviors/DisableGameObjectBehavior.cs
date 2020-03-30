@@ -6,39 +6,49 @@ using Innoactive.Creator.Core.Utils;
 namespace Innoactive.Creator.Core.Behaviors
 {
     /// <summary>
-    /// Disables the gameObject of target <see cref="ISceneObject"/>.
+    /// Disables gameObject of target ISceneObject.
     /// </summary>
     [DataContract(IsReference = true)]
     public class DisableGameObjectBehavior : Behavior<DisableGameObjectBehavior.EntityData>
     {
+        /// <summary>
+        /// "Disable game object" behavior's data.
+        /// </summary>
         [DisplayName("Disable Object")]
         [DataContract(IsReference = true)]
         public class EntityData : IBehaviorData
         {
+            /// <summary>
+            /// Object to disable.
+            /// </summary>
             [DataMember]
             [DisplayName("Object to disable")]
             public SceneObjectReference Target { get; set; }
 
+            /// <inheritdoc />
             public Metadata Metadata { get; set; }
+
+            /// <inheritdoc />
             public string Name { get; set; }
         }
 
-        private class ActivatingProcess : InstantStageProcess<EntityData>
+        private class ActivatingProcess : InstantProcess<EntityData>
         {
-            public override void Start(EntityData data)
+            public ActivatingProcess(EntityData data) : base(data)
             {
-                data.Target.Value.GameObject.SetActive(false);
+            }
+
+            /// <inheritdoc />
+            public override void Start()
+            {
+                Data.Target.Value.GameObject.SetActive(false);
             }
         }
 
-        private readonly IProcess<EntityData> process = new Process<EntityData>(new ActivatingProcess(), new EmptyStageProcess<EntityData>(), new EmptyStageProcess<EntityData>());
-
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActivatingProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new ActivatingProcess(Data);
         }
 
         public DisableGameObjectBehavior() : this("")
@@ -53,7 +63,6 @@ namespace Innoactive.Creator.Core.Behaviors
         /// <param name="targetObject">Unique name of target scene object.</param>
         public DisableGameObjectBehavior(string targetObject, string name = "Disable Object")
         {
-            Data = new EntityData();
             Data.Target = new SceneObjectReference(targetObject);
             Data.Name = name;
         }

@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
-using Innoactive.Creator.Core.Properties;
 using Innoactive.Creator.Core.Attributes;
 using Innoactive.Creator.Core.SceneObjects;
+using Innoactive.Creator.Core.Properties;
 using Innoactive.Creator.Core.Utils;
 
 namespace Innoactive.Creator.Core.Conditions
@@ -12,28 +12,41 @@ namespace Innoactive.Creator.Core.Conditions
     [DataContract(IsReference = true)]
     public class ObjectInColliderCondition : Condition<ObjectInColliderCondition.EntityData>
     {
+        /// <summary>
+        /// The "object in collider" condition's data.
+        /// </summary>
         [DisplayName("Move Object into Collider")]
         [DataContract(IsReference = true)]
         public class EntityData : IObjectInTargetData
         {
+            /// <summary>
+            /// The collider with trigger to enter.
+            /// </summary>
             [DataMember]
             [DisplayName("Object to collide into")]
             public ScenePropertyReference<ColliderWithTriggerProperty> TriggerProperty { get; set; }
 
+            /// <summary>
+            /// The object that has to enter the collider.
+            /// </summary>
             [DataMember]
             [DisplayName("Target object")]
             public SceneObjectReference TargetObject { get; set; }
 
+            /// <inheritdoc />
             public bool IsCompleted { get; set; }
 
+            /// <inheritdoc />
             [DataMember]
             [HideInTrainingInspector]
             public string Name { get; set; }
 
+            /// <inheritdoc />
             [DataMember]
             [DisplayName("Required seconds inside")]
             public float RequiredTimeInside { get; set; }
 
+            /// <inheritdoc />
             public Metadata Metadata { get; set; }
         }
 
@@ -49,48 +62,48 @@ namespace Innoactive.Creator.Core.Conditions
 
         public ObjectInColliderCondition(string targetPosition, string targetObject, float requiredTimeInTarget = 0, string name = "Move Object into Collider")
         {
-            Data = new EntityData
-            {
-                TriggerProperty = new ScenePropertyReference<ColliderWithTriggerProperty>(targetPosition),
-                TargetObject = new SceneObjectReference(targetObject),
-                RequiredTimeInside = requiredTimeInTarget,
-                Name = name
-            };
+            Data.TriggerProperty = new ScenePropertyReference<ColliderWithTriggerProperty>(targetPosition);
+            Data.TargetObject = new SceneObjectReference(targetObject);
+            Data.RequiredTimeInside = requiredTimeInTarget;
+            Data.Name = name;
         }
 
         private class ActiveProcess : ObjectInTargetActiveProcess<EntityData>
         {
-            protected override bool IsInside(EntityData data)
+            public ActiveProcess(EntityData data) : base(data)
             {
-                return data.TriggerProperty.Value.IsTransformInsideTrigger(data.TargetObject.Value.GameObject.transform);
+            }
+
+            /// <inheritdoc />
+            protected override bool IsInside()
+            {
+                return Data.TriggerProperty.Value.IsTransformInsideTrigger(Data.TargetObject.Value.GameObject.transform);
             }
         }
 
-        private class EntityAutocompleter : BaseAutocompleter<EntityData>
+        private class EntityAutocompleter : Autocompleter<EntityData>
         {
-            public override void Complete(EntityData data)
+            public EntityAutocompleter(EntityData data) : base(data)
             {
-                data.TriggerProperty.Value.FastForwardEnter(data.TargetObject.Value);
-                base.Complete(data);
+            }
+
+            /// <inheritdoc />
+            public override void Complete()
+            {
+                Data.TriggerProperty.Value.FastForwardEnter(Data.TargetObject.Value);
             }
         }
 
-        private readonly IProcess<EntityData> process = new ActiveOnlyProcess<EntityData>(new ActiveProcess());
-        protected override IProcess<EntityData> Process
+        /// <inheritdoc />
+        public override IProcess GetActiveProcess()
         {
-            get
-            {
-                return process;
-            }
+            return new ActiveProcess(Data);
         }
 
-        private readonly IAutocompleter<EntityData> autocompleter = new EntityAutocompleter();
-        protected override IAutocompleter<EntityData> Autocompleter
+        /// <inheritdoc />
+        protected override IAutocompleter GetAutocompleter()
         {
-            get
-            {
-                return autocompleter;
-            }
+            return new EntityAutocompleter(Data);
         }
     }
 }

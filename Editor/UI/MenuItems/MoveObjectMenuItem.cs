@@ -1,22 +1,13 @@
 ﻿using Innoactive.Creator.Core.Behaviors;
-using Innoactive.CreatorEditor.UI;
-using UnityEngine;
+using Innoactive.CreatorEditor.UI.StepInspector.Menu;
 
-namespace Innoactive.CreatorEditor.Core.UI.Behaviors
+namespace Innoactive.CreatorEditor.UI.Behaviors
 {
-    /// <summary>
-    /// Menu item which shows <see cref="MoveObjectBehavior"/> in the step inspector.
-    /// </summary>
-    public class MoveObjectMenuItem : StepInspectorMenu.Item<IBehavior>
+    /// <inheritdoc />
+    public class MoveObjectMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />
-        public override GUIContent DisplayedName
-        {
-            get
-            {
-                return new GUIContent("Move Object");
-            }
-        }
+        public override string DisplayedName { get; } = "Move Object";
 
         /// <inheritdoc />
         public override IBehavior GetNewItem()
