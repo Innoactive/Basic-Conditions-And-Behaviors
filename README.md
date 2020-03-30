@@ -1,6 +1,6 @@
 # Basic Behaviors, Conditions and Properties 
 
-This [Innoactive Creator](https://github.com/Innoactive/Creator) component contains a set of basic behaviors, conditions and properties which are used in almost every training and functions as base for other components e.g. [XR-Interaction](https://github.com/Innoactive/XR-Interaction-Component) or [VRTK-Interaction](https://github.com/Innoactive/VRTK-Interaction-Component).
+This [Innoactive Creator](https://github.com/Innoactive/Creator) component contains a set of basic behaviors, conditions and properties which are used in almost every training course and functions as base for other components e.g. [XR-Interaction](https://github.com/Innoactive/XR-Interaction-Component) or [VRTK-Interaction](https://github.com/Innoactive/VRTK-Interaction-Component).
 
 ### Behaviors
 - Behavior Sequence
