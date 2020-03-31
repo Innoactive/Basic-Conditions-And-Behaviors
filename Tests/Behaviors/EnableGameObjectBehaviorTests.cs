@@ -29,7 +29,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
                         .AddCondition(trigger)))
                 .Build();
 
-            course.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            course.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             TrainingRunner.Initialize(course);
             TrainingRunner.Run();
@@ -66,7 +66,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
                         .AddCondition(trigger)))
                 .Build();
 
-            course.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            course.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When the behavior is activated and after the step is completed
             TrainingRunner.Initialize(course);

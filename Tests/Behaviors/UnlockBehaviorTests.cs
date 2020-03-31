@@ -48,7 +48,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
 
             UnlockObjectBehavior unlockBehavior = new UnlockObjectBehavior(targetObject);
             step.Data.Behaviors.Data.Behaviors.Add(unlockBehavior);
-            step.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            step.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we fulfill the step,
             bool isLockedInitially = targetObject.IsLocked;
@@ -97,7 +97,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
 
             UnlockObjectBehavior unlockBehavior = new UnlockObjectBehavior(targetObject);
             step.Data.Behaviors.Data.Behaviors.Add(unlockBehavior);
-            step.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            step.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             targetObject.SetLocked(true);
 
@@ -163,7 +163,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             TrainingSceneObject targetObject = gameObject.AddComponent<TrainingSceneObject>();
 
             UnlockObjectBehavior behavior = new UnlockObjectBehavior(targetObject);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             targetObject.SetLocked(true);
 
@@ -198,7 +198,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             TrainingSceneObject targetObject = gameObject.AddComponent<TrainingSceneObject>();
 
             UnlockObjectBehavior behavior = new UnlockObjectBehavior(targetObject);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             targetObject.SetLocked(true);
 

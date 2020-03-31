@@ -239,7 +239,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
                 optional,
             });
 
-            sequence.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            sequence.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
             sequence.LifeCycle.Activate();
 
             yield return null;
@@ -282,7 +282,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
                 optional,
             });
 
-            sequence.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            sequence.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             sequence.LifeCycle.Activate();
 
@@ -320,7 +320,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
                 optional,
             });
 
-            sequence.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            sequence.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             sequence.LifeCycle.Activate();
 
@@ -336,7 +336,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             sequence.Update();
 
             //When you re-enable it,
-            sequence.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            sequence.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             notOptional.LifeCycle.MarkToFastForwardStage(Stage.Activating);
             notOptional.LifeCycle.MarkToFastForwardStage(Stage.Deactivating);

@@ -89,7 +89,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When I activate that behavior and wait for transition duration,
             behavior.LifeCycle.Activate();
@@ -129,7 +129,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             positionProvider.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, positionProvider, duration);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we activate that behavior,
             behavior.LifeCycle.Activate();
@@ -166,7 +166,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we activate that behavior,
             behavior.LifeCycle.Activate();
@@ -201,7 +201,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             target.ChangeUniqueName(positionProviderName);
 
             MoveObjectBehavior behavior = new MoveObjectBehavior(moved, target, duration);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we activate the behavior,
             behavior.LifeCycle.Activate();

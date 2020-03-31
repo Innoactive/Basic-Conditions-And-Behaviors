@@ -48,7 +48,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             // Given a PlayAudioBehavior,
             ResourceAudio audioData = new ResourceAudio(new LocalizedString("Sounds/test-sound", "Sounds/test-sound"));
             IBehavior behavior = new PlayAudioBehavior(audioData, BehaviorExecutionStages.Activation, audioSource);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we activate it,
             behavior.LifeCycle.Activate();
@@ -67,7 +67,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             // Given a PlayAudioBehavior,
             ResourceAudio audioData = new ResourceAudio(new LocalizedString("Sounds/test-sound", "Sounds/test-sound"));
             IBehavior behavior = new PlayAudioBehavior(audioData, BehaviorExecutionStages.Activation, audioSource);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we activate it and wait for the audio to play back,
             behavior.LifeCycle.Activate();
@@ -94,7 +94,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             // Given a PlayAudioBehavior with activation mode "Deactivation",
             ResourceAudio audioData = new ResourceAudio(new LocalizedString("Sounds/test-sound", "Sounds/test-sound"));
             IBehavior behavior = new PlayAudioBehavior(audioData, BehaviorExecutionStages.Deactivation, audioSource);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we activate and deactivate it,
             behavior.LifeCycle.Activate();
@@ -120,7 +120,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             // Given a PlayAudioBehavior with activation mode "Deactivation",
             ResourceAudio audioData = new ResourceAudio(new LocalizedString("Sounds/test-sound", "Sounds/test-sound"));
             IBehavior behavior = new PlayAudioBehavior(audioData, BehaviorExecutionStages.Deactivation, audioSource);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we activate and deactivate it,
             behavior.LifeCycle.Activate();
@@ -149,7 +149,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             // Given a PlayAudioBehavior with activation mode "Deactivation",
             ResourceAudio audioData = new ResourceAudio(new LocalizedString("Sounds/test-sound", "Sounds/test-sound"));
             IBehavior behavior = new PlayAudioBehavior(audioData, BehaviorExecutionStages.Deactivation, audioSource);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we activate and deactivate it and wait until the clip stops playing,
             behavior.LifeCycle.Activate();
@@ -183,7 +183,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             // Given a PlayAudioBehavior with empty audio data and mode set to Activation
             ResourceAudio audioData = new ResourceAudio(null);
             IBehavior behavior = new PlayAudioBehavior(audioData, BehaviorExecutionStages.Activation, audioSource);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When behavior is activated
             behavior.LifeCycle.Activate();
@@ -201,7 +201,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             // Given a PlayAudioBehavior with empty audio data and mode set to Deactivation
             ResourceAudio audioData = new ResourceAudio(null);
             IBehavior behavior = new PlayAudioBehavior(audioData, BehaviorExecutionStages.Deactivation, audioSource);
-            behavior.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            behavior.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
 
             // When behavior is activated

@@ -46,7 +46,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             LockObjectBehavior lockBehavior = new LockObjectBehavior(targetObject);
             step.Data.Behaviors.Data.Behaviors.Add(lockBehavior);
 
-            step.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            step.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When we fulfill the step,
             bool isLockedInitially = targetObject.IsLocked;
@@ -94,7 +94,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             LockObjectBehavior lockBehavior = new LockObjectBehavior(targetObject);
             step.Data.Behaviors.Data.Behaviors.Add(lockBehavior);
 
-            step.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            step.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             targetObject.SetLocked(true);
 
@@ -164,7 +164,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             LockObjectBehavior behavior = new LockObjectBehavior(targetObject);
             step.Data.Behaviors.Data.Behaviors.Add(behavior);
 
-            step.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            step.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             bool isLockedInitially = targetObject.IsLocked;
 
@@ -209,7 +209,7 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             LockObjectBehavior behavior = new LockObjectBehavior(targetObject);
             step.Data.Behaviors.Data.Behaviors.Add(behavior);
 
-            step.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            step.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             bool isLockedInitially = targetObject.IsLocked;
 

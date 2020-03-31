@@ -23,7 +23,7 @@ namespace Innoactive.Creator.Core.Tests.Courses
             transition.Data.Conditions.Add(condition);
             step.Data.Transitions.Data.Transitions.Add(transition);
             step.Data.Behaviors.Data.Behaviors.Add(behavior);
-            step.Configure(RuntimeConfigurator.Configuration.GetCurrentMode());
+            step.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             step.LifeCycle.Activate();
 
