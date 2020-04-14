@@ -5,7 +5,7 @@ using System.Linq;
 using Innoactive.Creator.Core.Behaviors;
 using Innoactive.Creator.Core.Conditions;
 using Innoactive.Creator.Core.Properties;
-using Innoactive.Creator.Core.Utils.Builders;
+using Innoactive.Creator.Tests.Builder;
 using Innoactive.Creator.Core.Internationalization;
 using Innoactive.Creator.Core.SceneObjects;
 using Innoactive.Creator.Tests.Utils;
@@ -158,7 +158,7 @@ namespace Innoactive.Creator.Core.Tests.Builder
             // Given a builder with a predefined Intro step
             LinearTrainingBuilder builder = new LinearTrainingBuilder("TestTraining")
                 .AddChapter(new LinearChapterBuilder("TestChapter")
-                    .AddStep(Innoactive.Creator.Core.Utils.Builders.DefaultSteps.Intro("TestIntroStep")));
+                    .AddStep(Creator.Tests.Builder.DefaultSteps.Intro("TestIntroStep")));
 
             // When we build a training from it,
             IStep step = builder.Build().Data.FirstChapter.Data.FirstStep;

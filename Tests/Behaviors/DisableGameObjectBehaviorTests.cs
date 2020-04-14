@@ -1,6 +1,6 @@
 using System.Collections;
 using Innoactive.Creator.Core.Behaviors;
-using Innoactive.Creator.Core.Utils.Builders;
+using Innoactive.Creator.Tests.Builder;
 using Innoactive.Creator.Core.Configuration;
 using Innoactive.Creator.Core.SceneObjects;
 using Innoactive.Creator.Tests.Utils;
@@ -32,8 +32,8 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             course.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When the behavior is activated
-            TrainingRunner.Initialize(course);
-            TrainingRunner.Run();
+            CourseRunner.Initialize(course);
+            CourseRunner.Run();
 
             yield return new WaitUntil(()=> course.Data.FirstChapter.Data.Steps[0].LifeCycle.Stage == Stage.Active);
 
@@ -68,8 +68,8 @@ namespace Innoactive.Creator.Core.Tests.Behaviors
             course.Configure(RuntimeConfigurator.Configuration.Modes.CurrentMode);
 
             // When the behavior is activated and after the step is completed
-            TrainingRunner.Initialize(course);
-            TrainingRunner.Run();
+            CourseRunner.Initialize(course);
+            CourseRunner.Run();
 
             yield return new WaitUntil(()=> course.Data.FirstChapter.Data.Steps[1].LifeCycle.Stage == Stage.Active);
 
