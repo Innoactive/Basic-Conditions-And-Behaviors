@@ -22,7 +22,7 @@ namespace Innoactive.CreatorEditor.Core.UI.Drawers
                 return base.GetTypeNameLabel(value, declaredType);
             }
 
-            return new GUIContent("Play " + behavior.AudioData.SourceName);
+            return base.GetTypeNameLabel(behavior.AudioData, behavior.AudioData.GetType());
         }
     }
 }

@@ -16,25 +16,8 @@ namespace Innoactive.CreatorEditor.Core.UI.Drawers
         /// <inheritdoc />
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
-            ResourceAudio resourceAudio = currentValue as ResourceAudio;
-
-            if (resourceAudio != null)
-            {
-                if (resourceAudio.Path == null)
-                {
-                    resourceAudio.Path = new LocalizedString();
-                    changeValueCallback(resourceAudio);
-                }
-
-                ITrainingDrawer pathDrawer = DrawerLocator.GetDrawerForMember(resourceAudio.GetType().GetProperty("Path", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance), typeof(LocalizedString));
-                return pathDrawer.Draw(rect, resourceAudio.Path, newPath =>
-                {
-                    resourceAudio.Path = (LocalizedString) newPath;
-                    changeValueCallback(resourceAudio);
-                }, label);
-            }
-
-            return base.Draw(rect, currentValue, changeValueCallback, label);
+            // Has to run with a null label to not show two labels, dont ask me why.
+            return base.Draw(rect, currentValue, changeValueCallback, (GUIContent)null);
         }
     }
 }
