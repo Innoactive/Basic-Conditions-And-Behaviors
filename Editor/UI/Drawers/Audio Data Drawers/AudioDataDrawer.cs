@@ -17,7 +17,7 @@ namespace Innoactive.CreatorEditor.Core.UI.Drawers
         public override Rect Draw(Rect rect, object currentValue, Action<object> changeValueCallback, GUIContent label)
         {
             // Has to run with a null label to not show two labels, dont ask me why.
-            return base.Draw(rect, currentValue, changeValueCallback, (GUIContent)null);
+            return base.Draw(rect, currentValue, changeValueCallback, GUIContent.none);
         }
     }
 }
