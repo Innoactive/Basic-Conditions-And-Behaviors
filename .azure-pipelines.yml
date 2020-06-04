@@ -159,7 +159,7 @@ stages:
               condition: always()
               inputs:
                   targetPath: "$(Build.ArtifactStagingDirectory)/logs/"
-                  artifact: "creator-basic-condition-behaviors-logs"
+                  artifact: "creator-basic-condition-behaviors-logs-$(System.JobId)"
                   publishLocation: "pipeline"
 
   - stage: Release
