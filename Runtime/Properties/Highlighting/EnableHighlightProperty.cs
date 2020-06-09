@@ -10,7 +10,7 @@ namespace Innoactive.Creator.Core.Properties
     {
         [Tooltip("Object to show for highlighting.")]
         [SerializeField]
-        private GameObject highlightObject;
+        private GameObject highlightObject = null;
 
         /// <inheritdoc/>
         public override void Highlight(Color highlightColor)
