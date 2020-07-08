@@ -5,7 +5,7 @@ using Innoactive.CreatorEditor.UI.StepInspector.Menu;
 namespace Innoactive.CreatorEditor.UI.Behaviors
 {
     /// <inheritdoc />
-    [Obsolete("Locking scene objects is obsoleted, consider using LockableProperties.")]
+    [Obsolete("Locking scene objects is obsoleted, consider using the 'Unlocked Objects' list in the Step window.")]
     public class LockObjectMenuItem : MenuItem<IBehavior>
     {
         /// <inheritdoc />

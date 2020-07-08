@@ -9,7 +9,7 @@ namespace Innoactive.Creator.Core.Behaviors
     /// <summary>
     /// Behavior that unlocks the target SceneObject while active, and locks it again on deactivation (unless it was not locked initially)
     /// </summary>
-    [Obsolete("Locking scene objects is obsoleted, consider using property locking.")]
+    [Obsolete("Locking scene objects is obsoleted, consider using the 'Unlocked Objects' list in the Step window.")]
     [DataContract(IsReference = true)]
     public class UnlockObjectBehavior : Behavior<UnlockObjectBehavior.EntityData>
     {
