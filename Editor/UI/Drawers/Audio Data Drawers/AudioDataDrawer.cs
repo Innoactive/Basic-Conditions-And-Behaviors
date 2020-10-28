@@ -24,6 +24,7 @@ namespace Innoactive.CreatorEditor.Core.UI.Drawers
             return base.Draw(rect, currentValue, changeValueCallback, GUIContent.none);
         }
 
+        /// <inheritdoc />
         protected override void CheckValidationForValue(object currentValue, MemberInfo info, GUIContent label)
         {
             label.image = image;
