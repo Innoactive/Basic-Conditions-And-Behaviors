@@ -30,7 +30,7 @@ namespace Innoactive.Creator.Core.Conditions
             /// The tracked object.
             /// </summary>
             [DataMember]
-            [DisplayName("Tracked Object")]
+            [DisplayName("Tracked object")]
             public SceneObjectReference Target { get; set; }
 
             /// <summary>
