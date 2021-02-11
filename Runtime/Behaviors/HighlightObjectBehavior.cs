@@ -44,7 +44,7 @@ namespace Innoactive.Creator.Core.Behaviors
             /// Target scene object to be highlighted.
             /// </summary>
             [DataMember]
-            [DisplayName("Object to highlight")]
+            [DisplayName("Object")]
             public ScenePropertyReference<IHighlightProperty> ObjectToHighlight { get; set; }
 
             /// <inheritdoc />
