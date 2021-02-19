@@ -11,7 +11,6 @@ namespace Innoactive.Creator.Core.Behaviors
     /// </summary>
     [Obsolete("Locking scene objects is obsoleted, consider using the 'Unlocked Objects' list in the Step window.")]
     [DataContract(IsReference = true)]
-    [HelpLink("https://developers.innoactive.de/documentation/creator/latest/articles/innoactive-creator/default-behaviors.html#lock-object")]
     public class LockObjectBehavior : Behavior<LockObjectBehavior.EntityData>
     {
         /// <summary>
