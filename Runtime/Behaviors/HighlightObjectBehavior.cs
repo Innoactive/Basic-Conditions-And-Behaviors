@@ -32,7 +32,7 @@ namespace Innoactive.Creator.Core.Behaviors
             /// Highlight color set in the Step Inspector.
             /// </summary>
             [DataMember]
-            [DisplayName("Highlight color")]
+            [DisplayName("Color")]
             public Color HighlightColor
             {
                 get { return CustomHighlightColor.Value; }
