@@ -45,7 +45,7 @@ namespace Innoactive.Creator.Core.Behaviors
             [OptionalValue]
 #endif
             [DataMember]
-            [DisplayName("Animation duration (in sec)")]
+            [DisplayName("Animation (in seconds)")]
             public float Duration { get; set; }
 
             /// <inheritdoc />
