@@ -40,9 +40,7 @@ namespace Innoactive.Creator.Core.Conditions
         {
         }
 
-        // ReSharper disable once SuggestBaseTypeForParameter
-        public TeleportCondition(ColliderWithTriggerProperty teleportPoint, string name = null)
-            : this(TrainingReferenceUtils.GetNameFrom(teleportPoint), name)
+        public TeleportCondition(ColliderWithTriggerProperty teleportPoint, string name = null) : this(TrainingReferenceUtils.GetNameFrom(teleportPoint), name)
         {
         }
 
