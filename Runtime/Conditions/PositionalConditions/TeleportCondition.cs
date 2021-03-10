@@ -55,6 +55,13 @@ namespace Innoactive.Creator.Core.Conditions
             public ActiveProcess(EntityData data) : base(data)
             {
             }
+            
+            /// <inheritdoc />
+            public override void Start()
+            {
+                base.Start();
+                Data.TeleportPoint.Value.Initialize();
+            }
 
             /// <inheritdoc />
             protected override bool CheckIfCompleted()

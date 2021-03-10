@@ -19,6 +19,14 @@ namespace Innoactive.Creator.Core.Properties
         bool WasUsedToTeleport { get; }
         
         /// <summary>
+        /// Sets <see cref="WasUsedToTeleport"/> to true.
+        /// </summary>
+        /// <remarks>
+        /// This method is called every time a <see cref="Conditions.TeleportCondition"/> is activate.
+        /// </remarks>
+        void Initialize();
+        
+        /// <summary>
         /// Instantaneously simulate that the object was used.
         /// </summary>
         void FastForwardTeleport();
