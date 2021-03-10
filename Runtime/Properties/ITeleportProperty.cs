@@ -4,7 +4,7 @@ using Innoactive.Creator.Core.SceneObjects;
 namespace Innoactive.Creator.Core.Properties
 {
     /// <summary>
-    /// Interface for <see cref="ISceneObject"/>s that can be used for teleport into.
+    /// Interface for <see cref="ISceneObjectProperty"/>s that can be used for teleport into.
     /// </summary>
     public interface ITeleportProperty : ISceneObjectProperty, ILockable
     {
@@ -14,7 +14,7 @@ namespace Innoactive.Creator.Core.Properties
         event EventHandler<EventArgs> Teleported;
         
         /// <summary>
-        /// Is object currently used.
+        /// True if an XR Rig was teleported into this <see cref="ITeleportProperty"/>.
         /// </summary>
         bool WasUsedToTeleport { get; }
         
