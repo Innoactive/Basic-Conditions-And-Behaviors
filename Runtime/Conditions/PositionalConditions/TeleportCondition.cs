@@ -36,15 +36,15 @@ namespace Innoactive.Creator.Core.Conditions
             public Metadata Metadata { get; set; }
         }
 
-        public TeleportCondition() : this("", "")
+        public TeleportCondition() : this( "")
         {
         }
 
-        public TeleportCondition(ColliderWithTriggerProperty teleportPoint, string name = null) : this(TrainingReferenceUtils.GetNameFrom(teleportPoint), name)
+        public TeleportCondition(ITeleportProperty teleportPoint, string name = null) : this(TrainingReferenceUtils.GetNameFrom(teleportPoint), name)
         {
         }
 
-        public TeleportCondition(string teleportPoint, string name = "Dummy")
+        public TeleportCondition(string teleportPoint, string name = "Teleport")
         {
             Data.TeleportPoint = new ScenePropertyReference<ITeleportProperty>(teleportPoint);
             Data.Name = name;
