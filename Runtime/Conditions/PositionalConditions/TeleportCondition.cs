@@ -8,7 +8,7 @@ using Innoactive.Creator.Core.Validation;
 namespace Innoactive.Creator.Core.Conditions
 {
     /// <summary>
-    /// Condition which is completed when an 'XR Rig' gets teleported into the referenced <see cref="ITeleportProperty"/>.
+    /// Condition which is completed when a teleportation action was executed into the referenced <see cref="ITeleportProperty"/>.
     /// </summary>
     [DataContract(IsReference = true)]
     public class TeleportCondition : Condition<TeleportCondition.EntityData>
