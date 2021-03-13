@@ -14,7 +14,7 @@ namespace Innoactive.Creator.Core.Properties
         event EventHandler<EventArgs> Teleported;
         
         /// <summary>
-        /// True if an XR Rig was teleported into this <see cref="ITeleportProperty"/>.
+        /// True if a teleportation action into this <see cref="ITeleportProperty"/> was done.
         /// </summary>
         bool WasUsedToTeleport { get; }
         
