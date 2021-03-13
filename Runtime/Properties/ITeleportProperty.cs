@@ -9,7 +9,7 @@ namespace Innoactive.Creator.Core.Properties
     public interface ITeleportProperty : ISceneObjectProperty, ILockable
     {
         /// <summary>
-        /// Emitted when an 'XR Rig' gets teleported into this <see cref="ISceneObject"/>.
+        /// Emitted when a teleportation action into this <see cref="ISceneObject"/> was done.
         /// </summary>
         event EventHandler<EventArgs> Teleported;
         
