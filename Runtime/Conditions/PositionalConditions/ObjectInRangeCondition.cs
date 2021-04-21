@@ -29,8 +29,6 @@ namespace Innoactive.Creator.Core.Conditions
             [DisplayName("Object")]
             public SceneObjectReference Target { get; set; }
 
-            [DataMember] 
-            [HideInTrainingInspector]
             private ScenePropertyReference<TransformInRangeDetectorProperty> referenceProperty;
 
             /// <summary>
@@ -110,16 +108,14 @@ namespace Innoactive.Creator.Core.Conditions
 
         private class ActiveProcess : ObjectInTargetActiveProcess<EntityData>
         {
-            private TransformInRangeDetectorProperty property;
-            
             public ActiveProcess(EntityData data) : base(data)
             {
             }
 
             public override void Start()
             {
-                property.SetTrackedTransform(Data.Target.Value.GameObject.transform);
-                property.DetectionRange = Data.Range;
+                Data.ReferenceProperty.Value.SetTrackedTransform(Data.Target.Value.GameObject.transform);
+                Data.ReferenceProperty.Value.DetectionRange = Data.Range;
                 
                 base.Start();
             }
@@ -127,7 +123,7 @@ namespace Innoactive.Creator.Core.Conditions
             /// <inheritdoc />
             protected override bool IsInside()
             {
-                return property.IsTargetInsideRange();
+                return Data.ReferenceProperty.Value.IsTargetInsideRange();
             }
         }
 
