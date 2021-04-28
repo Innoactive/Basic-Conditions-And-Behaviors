@@ -38,7 +38,7 @@ namespace Innoactive.Creator.Core.Behaviors
             /// Audio volume this audio file should be played with.
             /// </summary>
             [DataMember]
-            [DisplayName("Audio Volume")]
+            [DisplayName("Audio Volume (from 0 to 1)")]
             public float Volume { get; set; } = 1.0f;
 
             /// <summary>
