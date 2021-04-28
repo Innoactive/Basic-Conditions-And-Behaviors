@@ -78,7 +78,7 @@ namespace Innoactive.Creator.Core.Behaviors
                     if (Data.AudioData.HasAudioClip)
                     {
                         Data.AudioPlayer.clip = Data.AudioData.AudioClip;
-                        Data.AudioPlayer.volume = Data.Volume;
+                        Data.AudioPlayer.volume = Mathf.Clamp(Data.Volume, 0.0f, 1.0f);
                         Data.AudioPlayer.Play();
                     }
                     else
